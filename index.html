@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaSpace | Mission Control Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f1f5f9; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .grid-bg { background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 30px 30px; }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+    </style>
+</head>
+<body class="grid-bg min-h-screen p-4 md:p-10">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row justify-between items-center bg-slate-900/60 backdrop-blur-xl p-8 rounded-[2.5rem] border border-slate-800 shadow-2xl mb-8">
+            <div class="flex items-center gap-6">
+                <img src="logo.png" alt="MetaSpace Logo" class="w-12 h-12" onerror="this.style.display='none'; document.getElementById('shield-icon').style.display='block';">
+                <div id="shield-icon" style="display:none" class="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-xl uppercase">M</div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tighter uppercase">MetaSpace <span class="text-emerald-500">Mission Control</span></h1>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Formal Integrity Layer • LemonScript R&D</p>
+                </div>
+            </div>
+            <div class="mt-6 md:mt-0 flex flex-col items-end">
+                <div id="status-indicator" class="flex items-center gap-2 text-[10px] font-bold text-red-500 uppercase">
+                    <span class="w-2 h-2 rounded-full bg-red-500 pulse"></span> Connecting...
+                </div>
+                <a href="https://biological-code.netlify.app" target="_blank" class="text-[10px] text-emerald-500 mono mt-1 hover:underline font-bold">metaspace.bio</a>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left: Stats & Guide -->
+            <div class="lg:col-span-4 space-y-8">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-[2rem] p-8 shadow-xl">
+                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-8">Tactical Telemetry</h2>
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-800/50 pb-4">
+                            <span class="text-xs text-slate-400">Mission Clock</span>
+                            <span id="stat-time" class="text-xl font-bold mono">0.0s</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-800/50 pb-4">
+                            <span class="text-xs text-slate-400">Security Invariant</span>
+                            <span id="stat-status" class="text-sm font-bold text-emerald-500 uppercase">Verified Safe</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-800/50 pb-4">
+                            <span class="text-xs text-slate-400">Divergence</span>
+                            <span id="stat-div" class="text-sm font-bold mono">0.00m</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-950/20 border border-blue-900/30 rounded-[2rem] p-8 shadow-xl">
+                    <h2 class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-4">Interpretation Guide</h2>
+                    <ul class="text-[11px] text-slate-400 space-y-3 leading-relaxed">
+                        <li><span class="text-emerald-500 font-bold uppercase">● Green Path:</span> Trusted Inertial Navigation (INS).</li>
+                        <li><span class="text-red-500 font-bold uppercase">-- Red Dashed:</span> External GPS Signal (Vulnerable).</li>
+                        <li><span class="text-slate-100 font-bold uppercase underline italic">Verified Safe:</span> Normal flight sync active.</li>
+                        <li><span class="text-red-500 font-bold uppercase underline italic">Shield Engaged:</span> Formal Isolation triggered.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right: Chart & Logs -->
+            <div class="lg:col-span-8 space-y-8">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl">
+                    <div class="flex justify-between items-center mb-10">
+                        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Formal Integrity Analysis</h2>
+                        <div id="isolation-badge" class="hidden px-4 py-1 bg-red-600/20 text-red-500 border border-red-500/50 rounded-full text-[9px] font-bold uppercase pulse">
+                            Formal Isolation Active
+                        </div>
+                    </div>
+                    <div class="h-[450px]">
+                        <canvas id="telemetryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/60 border border-slate-800 rounded-[2rem] p-8 h-48 flex flex-col shadow-xl">
+                    <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Security Audit Log</h2>
+                    <div id="log-container" class="flex-1 overflow-y-auto space-y-2 text-[10px] mono text-slate-500 pr-2 custom-scrollbar">
+                        <div>> Syncing with MetaSpace engine on http://127.0.0.1:5000...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('telemetryChart').getContext('2d');
+        const logBox = document.getElementById('log-container');
+        const isoBadge = document.getElementById('isolation-badge');
+        
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'GPS Measurement', borderColor: '#ef4444', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, data: [], tension: 0.1 },
+                    { label: 'Trusted Path (INS)', borderColor: '#10b981', borderWidth: 2.5, pointRadius: 0, data: [], tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { display: false },
+                    y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } } }
+                },
+                plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10, weight: 'bold' } } } }
+            }
+        });
+
+        function addLog(msg, color = 'slate-500') {
+            const div = document.createElement('div');
+            div.className = `text-${color}`;
+            div.innerHTML = `> [${new Date().toLocaleTimeString()}] ${msg}`;
+            logBox.prepend(div);
+        }
+
+        async function updateDashboard() {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/telemetry', { cache: 'no-cache' });
+                const data = await res.json();
+                
+                document.getElementById('status-indicator').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online (Encrypted)';
+                document.getElementById('status-indicator').className = "flex items-center gap-2 text-[10px] font-bold text-emerald-500 uppercase";
+                
+                document.getElementById('stat-time').innerText = data.time + 's';
+                document.getElementById('stat-div').innerText = data.divergence + 'm';
+                document.getElementById('stat-status').innerText = data.status;
+                document.getElementById('stat-status').className = `text-sm font-bold uppercase ${data.alert ? 'text-red-500' : 'text-emerald-500'}`;
+
+                if (data.alert) {
+                    isoBadge.classList.remove('hidden');
+                    if (data.time % 10 === 0) {
+                        addLog(`STATUS: Shield Engaged. GPS Isolation at T+${data.time}s`, "red-500 font-bold");
+                    }
+                } else {
+                    isoBadge.classList.add('hidden');
+                }
+
+                chart.data.labels.push(data.time);
+                chart.data.datasets[0].data.push(data.gps);
+                chart.data.datasets[1].data.push(data.ins);
+                
+                if (chart.data.labels.length > 60) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                    chart.data.datasets[1].data.shift();
+                }
+                chart.update('none');
+
+            } catch (err) {
+                document.getElementById('status-indicator').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500 pulse"></span> Offline';
+                document.getElementById('status-indicator').className = "flex items-center gap-2 text-[10px] font-bold text-red-500 uppercase";
+            }
+        }
+
+        setInterval(updateDashboard, 500);
+    </script>
+</body>
+</html>
