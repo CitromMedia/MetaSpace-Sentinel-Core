@@ -1,4 +1,5 @@
-# **MetaSpace.bio: Deterministic Integrity Layer for Mission-Critical Autonomy**
+# **"The Open-Source Validation Framework for the MetaSpace Deterministic Engine."**
+*Managed by Citrom Media Deep Tech Holdings.*
 
 **MetaSpace.bio** is a bio-inspired logic engine providing a deterministic integrity layer for autonomous systems. It translates the biological principle of **Homeostasis** into unbreakable mathematical constraints, eliminating the uncertainty inherent in probabilistic or AI-based decision-making.
 
@@ -56,8 +57,12 @@ Aligned with **DO-178C**, **DO-333**, and **IEC 61508**:
 SHA256 Fingerprint: 9a721f6436caacfbd73f4303aed7465b3f53609ffd2129c445279d9f5cdf9d16  
 Patent Reference: OSIM Nr. 20251221-2230
 
-*This project is developed at **LemonScript**, the R\&D laboratory of **Citrom Méda LTD**. Proprietary FPGA synthesis engines and Pro Compiler access are managed by the lead architect.*
+## **MetaSpace-Sentinel is a proprietary technology developed by MetaSpace Technologies (a division of Citrom Media).**
+
+This repository contains the Public Validation Core enabling researchers and partners to verify our deterministic invariants. The full High-Performance Runtime (O(1) execution engine) and FPGA synthesis tools are available under a Commercial License.
+
+[View Pricing & Enterprise Licensing](https://metaspace.bio/pricing)
 
 **Official Documentation**:
-(EN): [metaspace.bio](https://lemonscripter.github.io/MetaSpace-Drone-Shield/)
-(HU): [metaspace.bio](https://biological-code.netlify.app)
+(EN): [metaspace.bio](https://specification.metaspace.bio/)
+(HU): [metaspace.bio](https://metaspace.bio)
